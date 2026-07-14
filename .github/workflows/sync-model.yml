@@ -1,0 +1,22 @@
+name: Sync model to repo
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download release asset
+        run: |
+          curl -sL -o mesh_textured_pbr.glb \
+            "https://github.com/AAPONLANG/fire_robot/releases/download/v1.0.0/mesh_textured_pbr.glb"
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add mesh_textured_pbr.glb
+          git diff --cached --quiet || (git commit -m "Add mesh model from release v1.0.0" && git push)
